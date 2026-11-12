@@ -1,0 +1,6 @@
+{
+    "name": "RTLLocalizationStudio.Installer",
+    "references": [],
+    "includePlatforms": ["Editor"],
+    "autoReferenced": false
+}

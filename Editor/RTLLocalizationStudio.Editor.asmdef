@@ -1,1 +1,26 @@
-{"name":"RTLLocalizationStudio.Editor","references":["RTLLocalizationStudio","Unity.Localization","Unity.Localization.Editor","Unity.TextMeshPro","Unity.Addressables.Editor","Unity.ResourceManager","Unity.ugui"],"includePlatforms":["Editor"],"autoReferenced":true}
+{
+    "name": "RTLLocalizationStudio.Editor",
+    "references": [
+        "RTLLocalizationStudio",
+        "Unity.Localization",
+        "Unity.Localization.Editor",
+        "Unity.TextMeshPro",
+        "Unity.Addressables.Editor",
+        "Unity.ResourceManager",
+        "Unity.ugui"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "RTLLS_UNITY_LOCALIZATION"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.localization",
+            "expression": "1.0.0",
+            "define": "RTLLS_UNITY_LOCALIZATION"
+        }
+    ]
+}

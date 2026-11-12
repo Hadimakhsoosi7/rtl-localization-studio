@@ -1,6 +1,6 @@
 {
   "name": "com.hadimakhsoosi7.rtl-localization-studio",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "RTL Localization Studio",
   "description": "Reusable localization workflow on top of Unity Localization: bulk text binding, CSV review, per-language fonts, RTL/Persian support and selective layout direction. Optional RTLTMPro bridge turns on automatically when RTLTMPro is in the project.",
   "unity": "6000.0",

@@ -1,1 +1,20 @@
-{"name":"RTLLocalizationStudio","references":["Unity.Localization","Unity.TextMeshPro","Unity.ResourceManager","Unity.ugui"],"autoReferenced":true}
+{
+    "name": "RTLLocalizationStudio",
+    "references": [
+        "Unity.Localization",
+        "Unity.TextMeshPro",
+        "Unity.ResourceManager",
+        "Unity.ugui"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "RTLLS_UNITY_LOCALIZATION"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.localization",
+            "expression": "1.0.0",
+            "define": "RTLLS_UNITY_LOCALIZATION"
+        }
+    ]
+}

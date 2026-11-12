@@ -910,7 +910,11 @@ namespace RTLLocalizationStudio.Editor
                     { LocalizationWorkspace.Setup(); statsDirty = true; SetNotice("Workspace is ready.", MessageType.Info); }
                     if (GUILayout.Button("Run validation", GUILayout.Height(28), GUILayout.Width(130))) RunValidation();
                     if (GUILayout.Button("Open README", GUILayout.Height(28), GUILayout.Width(110)))
-                        EditorUtility.RevealInFinder(Path.GetFullPath("Packages/com.hadimakhsoosi7.rtl-localization-studio/README.md"));
+                    {
+                        // Works for embedded, git/tarball (Library/PackageCache) and Assets installs.
+                        string editorDir = Path.GetDirectoryName(AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(this)));
+                        EditorUtility.RevealInFinder(Path.GetFullPath(FileUtil.GetPhysicalPath(Path.Combine(Path.GetDirectoryName(editorDir), "README.md"))));
+                    }
                 }
             }
             if (LocalizationWorkspace.Profile)

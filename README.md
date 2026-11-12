@@ -17,10 +17,12 @@ Open **Tools > RTL Localization Studio > Open Studio**.
 In Unity, open **Window > Package Manager**, click **+ > Add package from git URL…** and paste:
 
 ```
-https://github.com/Hadimakhsoosi7/rtl-localization-studio.git#v1.0.0
+https://github.com/Hadimakhsoosi7/rtl-localization-studio.git#v1.0.1
 ```
 
-The `#v1.0.0` suffix pins the version; change the tag to upgrade.
+The `#v1.0.1` suffix pins the version; change the tag to upgrade.
+
+**Or with a `.unitypackage`:** download `RTLLocalizationStudio-<version>.unitypackage` from [Releases](https://github.com/Hadimakhsoosi7/rtl-localization-studio/releases) and double-click it (or drag it into the Project window). It imports into `Assets/RTLLocalizationStudio` and offers to install Unity Localization if it is missing. Upgrading this way means deleting the folder and importing the new version; the git URL is easier to keep up to date.
 
 <details>
 <summary>Alternative: edit <code>Packages/manifest.json</code></summary>
@@ -28,7 +30,7 @@ The `#v1.0.0` suffix pins the version; change the tag to upgrade.
 Add this line to the `dependencies` section:
 
 ```json
-"com.hadimakhsoosi7.rtl-localization-studio": "https://github.com/Hadimakhsoosi7/rtl-localization-studio.git#v1.0.0",
+"com.hadimakhsoosi7.rtl-localization-studio": "https://github.com/Hadimakhsoosi7/rtl-localization-studio.git#v1.0.1",
 ```
 </details>
 
