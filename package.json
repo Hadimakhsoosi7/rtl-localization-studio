@@ -1,0 +1,18 @@
+{
+  "name": "com.hadimakhsoosi7.rtl-localization-studio",
+  "version": "1.0.0",
+  "displayName": "RTL Localization Studio",
+  "description": "Reusable localization workflow on top of Unity Localization: bulk text binding, CSV review, per-language fonts, RTL/Persian support and selective layout direction. Optional RTLTMPro bridge turns on automatically when RTLTMPro is in the project.",
+  "unity": "6000.0",
+  "author": { "name": "hadimakhsoosi7", "url": "https://github.com/hadimakhsoosi7" },
+  "repository": { "type": "git", "url": "https://github.com/hadimakhsoosi7/rtl-localization-studio.git" },
+  "documentationUrl": "https://github.com/hadimakhsoosi7/rtl-localization-studio#readme",
+  "changelogUrl": "https://github.com/hadimakhsoosi7/rtl-localization-studio/blob/main/CHANGELOG.md",
+  "licensesUrl": "https://github.com/hadimakhsoosi7/rtl-localization-studio/blob/main/LICENSE.md",
+  "license": "MIT",
+  "keywords": ["localization", "rtl", "persian", "farsi", "arabic", "textmeshpro", "i18n"],
+  "dependencies": {
+    "com.unity.localization": "1.5.13",
+    "com.unity.ugui": "2.0.0"
+  }
+}

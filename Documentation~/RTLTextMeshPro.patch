@@ -1,0 +1,83 @@
+diff --git a/Assets/RTLTMPro/Scripts/Runtime/RTLTextMeshPro.cs b/Assets/RTLTMPro/Scripts/Runtime/RTLTextMeshPro.cs
+index cd6d3e37..0b6a75c1 100644
+--- a/Assets/RTLTMPro/Scripts/Runtime/RTLTextMeshPro.cs
++++ b/Assets/RTLTMPro/Scripts/Runtime/RTLTextMeshPro.cs
+@@ -7,7 +7,7 @@ namespace RTLTMPro
+     public class RTLTextMeshPro : TextMeshProUGUI
+     {
+         // ReSharper disable once InconsistentNaming
+-#if TMP_VERSION_2_1_0_OR_NEWER
++#if TMP_VERSION_2_1_0_OR_NEWER || UNITY_6000_0_OR_NEWER
+         public override string text
+ #else
+         public new string text
+@@ -21,6 +21,9 @@ namespace RTLTMPro
+ 
+                 originalText = value;
+ 
++                // A direct assignment supersedes any earlier inherited SetText write.
++                lastProcessedText = base.text;
++
+                 UpdateText();
+             }
+         }
+@@ -93,6 +96,33 @@ namespace RTLTMPro
+         [SerializeField] protected bool forceFix;
+ 
+         protected readonly FastStringBuilder finalText = new FastStringBuilder(RTLSupport.DefaultBufferSize);
++        private string lastProcessedText;
++
++        protected override void OnEnable()
++        {
++            base.OnEnable();
++            if (lastProcessedText == null)
++            {
++                // Handles SetText written while an object was initially inactive.
++                string visible = base.text;
++                if (!string.IsNullOrEmpty(visible) && visible != originalText && visible != GetFixedText(originalText ?? "") &&
++                    (string.IsNullOrEmpty(originalText) || !HasPresentationForms(visible)))
++                    originalText = visible;
++                lastProcessedText = visible;
++            }
++            // TMP may consume its dirty flag while enabling/rebuilding the
++            // canvas. Shape serialized labels now, before the first render.
++            UpdateText();
++        }
++
++        private static bool HasPresentationForms(string text)
++        {
++            foreach (char c in text)
++                if ((c >= '\uFB50' && c <= '\uFDFF') || (c >= '\uFE70' && c <= '\uFEFF')) return true;
++            return false;
++        }
++
++        public void ResetTextWriteTracking() => lastProcessedText = base.text;
+ 
+         protected void Update()
+         {
+@@ -104,6 +134,10 @@ namespace RTLTMPro
+ 
+         public void UpdateText()
+         {
++            // TMP.SetText is not virtual and writes the base backing string directly.
++            // Preserve that source before the RTL update would otherwise overwrite it.
++            if (lastProcessedText != null && base.text != lastProcessedText)
++                originalText = base.text;
+             if (originalText == null)
+                 originalText = "";
+ 
+@@ -117,6 +151,7 @@ namespace RTLTMPro
+                 base.text = GetFixedText(originalText);
+             }
+ 
++            lastProcessedText = base.text;
+             havePropertiesChanged = true;
+         }
+ 
+@@ -131,4 +166,4 @@ namespace RTLTMPro
+             return finalText.ToString();
+         }
+     }
+-}
+\ No newline at end of file
++}
