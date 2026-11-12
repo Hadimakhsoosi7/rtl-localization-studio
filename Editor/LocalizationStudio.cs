@@ -862,7 +862,7 @@ namespace RTLLocalizationStudio.Editor
             var existing = new HashSet<string>(LocalizationWorkspace.Table("fa").Values.Select(x => x.Value).Where(x => x != null));
             phrases = AssetDatabase.FindAssets("t:MonoScript", new[] { scriptFolder })
                 .Select(AssetDatabase.GUIDToAssetPath).SelectMany(path => ScriptSourceExtractor.Extract(File.ReadAllText(path)))
-                .Where(value => value.Any(c => c >= '؀' && c <= 'ۿ')).Distinct()
+                .Where(value => value.Any(c => c >= '\u0600' && c <= '\u06ff')).Distinct()
                 .Select(x => new Phrase { text = x, registered = existing.Contains(x), selected = !existing.Contains(x) })
                 .OrderBy(x => x.registered).ToList();
             SetNotice(phrases.Count + " Persian strings found, " + phrases.Count(x => !x.registered) + " new. Untick anything that should not be translated.", MessageType.Info);

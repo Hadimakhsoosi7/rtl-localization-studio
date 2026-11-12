@@ -1,50 +1,62 @@
 # RTL Localization Studio
 
-Reusable Unity 6 package built on Unity Localization. Open **Tools > RTL Localization Studio > Open Studio**.
+A Unity 6 editor + runtime toolkit built on top of [Unity Localization](https://docs.unity3d.com/Packages/com.unity.localization@latest), with first-class support for right-to-left languages (Persian, Arabic, Sorani Kurdish).
 
-## نصب در هر پروژه
+- Bulk-connect every text in your scenes and prefabs to translation keys in one pass
+- CSV export/import with preview, validation and a translation review ledger
+- Per-language font mapping, glyph coverage check and project-wide font scan
+- Live language preview in Scene/Game view without entering Play Mode
+- Automatic translation of text written from scripts via `.text` / `SetText`
+- RTL shaping, Persian/Arabic digit conversion and selective layout mirroring
+- Optional [RTLTMPro](https://github.com/pnarimani/RTLTMPro) bridge that turns itself on when RTLTMPro is present
 
-**از گیت‌هاب (پیشنهادی):** در `Packages/manifest.json` بخش `dependencies`:
+Open **Tools > RTL Localization Studio > Open Studio**.
+
+## Installation
+
+**Git URL (recommended).** Add to the `dependencies` section of `Packages/manifest.json`:
 
 ```json
 "com.hadimakhsoosi7.rtl-localization-studio": "https://github.com/hadimakhsoosi7/rtl-localization-studio.git#v1.0.0"
 ```
 
-یا در Unity: **Window > Package Manager > + > Add package from git URL…** و همان آدرس. `#v1.0.0` نسخه را قفل می‌کند؛ برای به‌روزرسانی، تگ را عوض کنید.
+Or in Unity: **Window > Package Manager > + > Add package from git URL…** and paste the same URL. The `#v1.0.0` suffix pins the version; change the tag to upgrade.
 
-**محلی:** پوشه را در `Packages/` پروژه کپی کنید (embedded) یا `"com.hadimakhsoosi7.rtl-localization-studio": "file:D:/path/to/com.hadimakhsoosi7.rtl-localization-studio"`.
+**Local.** Copy the folder into your project's `Packages/` directory (embedded package), or reference it with `"com.hadimakhsoosi7.rtl-localization-studio": "file:D:/path/to/rtl-localization-studio"`.
 
-بعد از نصب، راه‌اندازی اولیه خودکار انجام می‌شود (`Assets/Localization` و تنظیمات Localization ساخته می‌شوند).
+On first compile the package sets itself up automatically (creates `Assets/Localization` and the Localization settings).
 
-**RTLTMPro (اختیاری):** اگر RTLTMPro در پروژه باشد، پل `RTL/` با define `RTL_LOCALIZATION_RTLTMPRO` خودکار فعال می‌شود. برای پشتیبانی کامل از `SetText`، تغییر `Documentation~/RTLTextMeshPro.patch` را روی `RTLTextMeshPro.cs` همان پروژه اعمال کنید (`git apply`).
+**RTLTMPro (optional).** If RTLTMPro is in the project, the `RTL/` bridge is enabled automatically through the `RTL_LOCALIZATION_RTLTMPRO` define. For full `SetText` support, apply `Documentation~/RTLTextMeshPro.patch` to that project's `RTLTextMeshPro.cs` (`git apply`).
 
-## زبان‌ها و مدیریت فونت
+Requirements: Unity 6 (6000.0+), `com.unity.localization` 1.5.13+, TextMeshPro (included in uGUI 2.0).
 
-۲۹ زبان آماده‌اند: فارسی `fa`، انگلیسی `en`، عربی `ar`، چینی ساده `zh-Hans`، کره‌ای `ko`، ژاپنی `ja`، فرانسوی `fr`، آلمانی `de`، اسپانیایی `es`، ایتالیایی `it`، هلندی `nl`، نروژی بوکمال `nb`، پرتغالی `pt`، ترکی `tr`، فنلاندی `fi`، روسی `ru`، چینی سنتی `zh-Hant`، مالایی `ms`، اندونزیایی `id`، تایلندی `th` ویتنامی `vi`، لهستانی `pl`، تاگالوگ `tl`، اوکراینی `uk`، هندی `hi`، یونانی `el`، کردی کرمانجی با خط لاتین `ku`، کردی سورانی با خط عربی و جهت راست‌به‌چپ `ckb` و بنگالی `bn`. راه‌اندازی، جدول و Locale آن‌ها را می‌سازد و تنظیمات قبلی را نگه می‌دارد. زبان‌های جدید تا زمان واردکردن ترجمه به فارسی برمی‌گردند. CSV جدید تمام زبان‌ها را دارد؛ CSV قبلیِ سه‌زبانه نیز قابل واردکردن است و ستون‌های حذف‌شده تغییر نمی‌کنند.
+## Languages and fonts
 
-در تب **Fonts**:
+29 languages are ready to use: Persian `fa`, English `en`, Arabic `ar`, Simplified Chinese `zh-Hans`, Korean `ko`, Japanese `ja`, French `fr`, German `de`, Spanish `es`, Italian `it`, Dutch `nl`, Norwegian Bokmål `nb`, Portuguese `pt`, Turkish `tr`, Finnish `fi`, Russian `ru`, Traditional Chinese `zh-Hant`, Malay `ms`, Indonesian `id`, Thai `th`, Vietnamese `vi`, Polish `pl`, Tagalog `tl`, Ukrainian `uk`, Hindi `hi`, Greek `el`, Kurmanji Kurdish (Latin script) `ku`, Sorani Kurdish (Arabic script, right-to-left) `ckb` and Bengali `bn`. Setup creates their tables and Locales and keeps existing settings. New languages fall back to the source language (Persian) until translations are imported. Newly exported CSVs contain every language; older three-language CSVs can still be imported and missing columns are left untouched.
 
-1. پوشه را روی `Assets` بگذارید و **Scan all texts & fonts** را بزنید. Sceneها، Prefabها و متن‌های غیرفعال بررسی می‌شوند. نمونه‌ی Scene و دارایی Prefab جداگانه شمارش می‌شوند.
-2. با **Show texts** متن، مسیر دارایی و مسیر Hierarchy هر استفاده از فونت را ببینید. فهرست دارایی‌های TMP و فایل‌های TTF/OTF هم قابل نمایش است.
-3. زبان را انتخاب کنید و روبه‌روی فونت اصلی، **replacement** را مشخص کنید. برای مثال می‌توانید Lalezar عنوان‌ها و Vazir متن‌ها را در ژاپنی به دو فونت متفاوت نگاشت کنید.
-4. متن‌های متصل به ترجمه از این نگاشت استفاده می‌کنند. برای فعال‌کردن تعویض فونت روی تمام موارد، از جمله متن خالی و متن بدون کلید ترجمه، **Enable font switching** همان گروه را بزنید. Sceneهای باز را ذخیره کنید. دارایی‌های ذخیره‌شده قبل از تغییر در `Library/RTLLocalizationStudioBackups` پشتیبان گرفته می‌شوند.
-5. **Save font rules** را بزنید و با **Preview language in open scenes** بدون Play بررسی کنید. **Restore preview** فونت و ظاهر ذخیره‌شده را برمی‌گرداند. حذف replacement به فونت پیش‌فرض زبان یا فونت اصلی برمی‌گردد.
+In the **Fonts** tab:
 
-اولویت TMP: نگاشتِ همان فونت → فونت پیش‌فرض زبان در Overview → فونت اصلی. UI Text و TextMesh قدیمی از نگاشت Font/TTF خودشان استفاده می‌کنند. LocalizedFont و LocalizedLegacyFont متن را ترجمه نمی‌کنند؛ مسئول تعویض فونت‌اند. Prefabهای متصل که در اجرا ساخته می‌شوند نیز این رفتار را دارند. اشیایی که تماماً از کد ساخته می‌شوند به این کامپوننت نیاز دارند.
+1. Set the folder to `Assets` and press **Scan all texts & fonts**. Scenes, prefabs and inactive texts are included. Scene instances and prefab assets are counted separately.
+2. Use **Show texts** to see the text, asset path and hierarchy path of every font usage. TMP font assets and TTF/OTF files can be listed too.
+3. Pick a language and set a **replacement** next to each original font. For example, you can map a heading font and a body font to two different Japanese fonts.
+4. Connected texts use this mapping. To switch fonts on everything, including empty texts and texts without a translation key, press **Enable font switching** for that group. Save open scenes. Saved assets are backed up to `Library/RTLLocalizationStudioBackups` before being modified.
+5. Press **Save font rules** and check the result with **Preview language in open scenes** without entering Play Mode. **Restore preview** brings back the saved fonts and appearance. Removing a replacement falls back to the language's default font, or to the original font.
 
-**Check glyph coverage** حروف ترجمه‌های موجود را در اطلس و fallbackهای فونت TMP بررسی می‌کند و کد حروف غایب را نشان می‌دهد. تگ‌ها و جای‌نگهدارها از بررسی کنار گذاشته می‌شوند. فونت Dynamic ممکن است در اجرا حروف را اضافه کند؛ این بررسی اطلس را تغییر نمی‌دهد. وجود حروف به‌تنهایی تضمین نمایش صحیح خط‌های پیچیده نیست؛ نتیجه را با فونت واقعی پیش‌نمایش کنید. فونت مناسب هر زبان را خودتان انتخاب کنید؛ افزودن زبان، فایل فونت یا ترجمه را دانلود نمی‌کند.
+TMP font priority: mapping for that font → language default font in Overview → original font. Legacy UI Text and TextMesh use their own Font/TTF mapping. `LocalizedFont` and `LocalizedLegacyFont` do not translate text; they only switch fonts. Connected prefabs instantiated at runtime behave the same way. Objects built entirely from code need this component.
 
-آخرین گزارش در `Library/RTLLocalizationStudio` نگه‌داری می‌شود و با **Load last scan** قابل بازکردن است. **Export usage CSV** گزارش TMP را برای بررسی خارج از Unity می‌سازد؛ گزارش مستقل legacy نیز در همین پوشه ذخیره می‌شود.
+**Check glyph coverage** checks the characters of existing translations against the TMP font atlas and its fallbacks and lists missing code points. Tags and placeholders are skipped. Dynamic fonts may add glyphs at runtime; this check does not modify the atlas. Having the glyphs does not by itself guarantee correct rendering of complex scripts, so preview the result with the real font. Choose a suitable font for each language yourself; adding a language does not download fonts or translations.
 
-## شروع سریع
+The latest report is kept in `Library/RTLLocalizationStudio` and can be reopened with **Load last scan**. **Export usage CSV** writes the TMP report for review outside Unity; a separate legacy-font report is saved in the same folder.
 
-1. در اولین کامپایل، تنظیمات فارسی، انگلیسی، عربی و جدول Game ایجاد می‌شوند. اگر راه‌اندازی کامل نشده بود، در Overview دکمه Set up localization را بزنید.
-2. در Bulk setup محدوده را مشخص کنید. برای شروع Loaded scenes یا Selected scene objects مناسب است.
-3. Scan texts را بزنید. متن‌های خالی، عددی، ورودی و موارد مستثنا به‌صورت خودکار انتخاب نمی‌شوند.
-4. کلیدها و متن‌ها را بررسی کنید و Connect selected را بزنید. اتصال گروهی ظاهر متن را تغییر نمی‌دهد. Scene باز را خودتان ذخیره کنید.
-5. در Translations ترجمه وارد کنید یا CSV بگیرید. فایل UTF-8 را با Excel یا Google Sheets ویرایش کنید و دوباره CSV خروجی بگیرید.
-6. Preview CSV import تغییرات را قبل از اعمال نشان می‌دهد. برای فهرست کامل از Full review report استفاده کنید.
-7. جهت متن تنها وقتی FollowLanguage انتخاب شود تغییر می‌کند. برای تغییر ترتیب عناصر، کامپوننت LocalizedLayout جداگانه وجود دارد.
+## Quick start
+
+1. On first compile, Persian, English and Arabic settings and a `Game` table are created. If setup did not finish, press **Set up localization** in Overview.
+2. In **Bulk setup**, choose a scope. **Loaded scenes** or **Selected scene objects** is a good start.
+3. Press **Scan texts**. Empty, numeric, input-field and ignored texts are not selected automatically.
+4. Review keys and texts, then press **Connect selected**. Bulk connecting does not change how the text looks. Save the open scene yourself.
+5. Enter translations in **Translations**, or export a CSV. Edit the UTF-8 file in Excel or Google Sheets and export it back to CSV.
+6. **Preview CSV import** shows the changes before applying them. Use **Full review report** for the complete list.
+7. Text direction only changes when **FollowLanguage** is selected. Reordering elements is handled separately by the `LocalizedLayout` component.
 
 The **SCENE LANGUAGE** bar is available above every Studio tab. Click **Persian / FA**, **English / EN** or **Arabic / AR** to preview all connected texts in loaded scenes and Prefab Mode without Play. Inactive objects are included. Missing translations fall back to the Persian source. Click the same language again to refresh after editing translations. Scene and Game views redraw using the font, digit and alignment settings of each label.
 
@@ -54,24 +66,25 @@ The Studio UI uses English labels because Unity IMGUI does not reliably shape Pe
 
 ## Runtime
 
-### نوشتن متن با همان `.text` و `SetText`
+### Writing text with plain `.text` and `SetText`
 
-متن‌های متصل‌شده به‌صورت پیش‌فرض **Auto translate written text** دارند. در Play Mode نوشتن متن فارسی با همان دستورهای معمول، ترجمه‌ی آن را از جدول پیدا می‌کند و با تغییر زبان دوباره نمایش می‌دهد:
+Connected texts have **Auto translate written text** enabled by default. In Play Mode, writing source-language (Persian) text with the usual calls looks up its translation in the table and re-renders it when the language changes:
 
 ```csharp
-title.text = "شروع بازی";
-score.SetText("امتیاز: {0}", 120);
+title.text = playSource;              // a Persian source string registered in the table
+score.SetText(scoreSource, 120);      // e.g. the Persian equivalent of "Score: {0}"
 ```
 
-متن فارسی باید در جدول ثبت شده باشد و ترجمه داشته باشد. برای مثال دوم، سطر فارسی `امتیاز: {0}` و انگلیسی `Score: {0}` را ثبت کنید. قالب‌های عددی شماره‌دار پشتیبانی می‌شوند؛ جمله‌های ساخته‌شده از نام بازیکن یا متن دلخواه به قالب و اتصال صریح نیاز دارند. متن ناشناخته، ورودی کاربر و متن مبهم بدون کلید مشخص تغییر نمی‌کنند. این قابلیت ترجمه‌ی آنلاین یا حدس‌زدن معنی متن نیست.
+The source text must be registered in the table and have a translation. For the second example, register the Persian row for `Score: {0}` and the English row `Score: {0}`. Numbered numeric templates are supported; sentences built from player names or arbitrary text need an explicit template and binding. Unknown text, user input and ambiguous text without an explicit key are left unchanged. This is not online translation and it never guesses meaning.
 
-برای متن‌های داخل کد، در **Code audit > Find Persian source phrases in code** عبارت‌ها را بررسی کنید و **Add reviewed phrases to translation table** را بزنید؛ سپس ترجمه‌ها را در Translations یا CSV وارد کنید. اسکن، عبارت‌های ثابت و برخی شرط‌های ساده و SetText را پیدا می‌کند؛ همه‌ی ترکیب‌های ممکن C# را استخراج نمی‌کند.
+For strings inside scripts, use **Code audit > Find Persian source phrases in code**, review the phrases and press **Add reviewed phrases to translation table**; then enter translations in Translations or via CSV. The scan finds constant strings, some simple conditionals and `SetText` calls; it does not extract every possible C# combination.
 
-برای UIهایی که فقط از کد پر می‌شوند، در **Bulk setup** پس از Scan متن‌های موردنظر، از جمله موارد خالی، را دستی انتخاب کنید و **Attach auto translation for script-written text** را بزنید. اتصال گروهی انجام می‌شود و نیازی به افزودن دستی کامپوننت روی تک‌تک متن‌ها نیست. Scene یا Prefab تغییرکرده را ذخیره کنید. اشیایی که کاملاً در زمان اجرا با کد ساخته می‌شوند باید این اتصال را در Prefab یا هنگام ساخت داشته باشند.
+For UIs that are only filled from code, select the relevant texts (including empty ones) in **Bulk setup** after scanning and press **Attach auto translation for script-written text**. Binding happens in bulk, so there is no need to add the component to each text by hand. Save the modified scene or prefab. Objects created entirely at runtime need this binding in their prefab or at creation time.
 
-تشخیص تغییر در LateUpdate انجام می‌شود و مقدار getter بلافاصله پس از نوشتن می‌تواند هنوز فارسی باشد. هر متن فقط با تغییر مقدار جستجو می‌شود. برای شمار زیادی متن فعال، هزینه‌ی بررسی هر فریم را در Profiler پروژه بسنجید. برای یک UI خاص می‌توانید گزینه‌ی خودکار را خاموش کنید و API کلیدی زیر را به کار ببرید.
+Changes are detected in `LateUpdate`, so the getter can still return the source text right after writing. Each text is looked up only when its value changes. With many active texts, measure the per-frame cost in the Profiler. For a specific UI you can turn the automatic option off and use the key-based API below.
 
-پل RTL همراه یک تغییر سازگاری در `RTLTextMeshPro.cs` است تا SetText ارث‌بری‌شده نیز حفظ شود؛ این تغییر در `Documentation~/RTLTextMeshPro.patch` است و باید در هر پروژه‌ی دارای RTLTMPro اعمال شود.
+The RTL bridge comes with a compatibility change to `RTLTextMeshPro.cs` so that inherited `SetText` calls are preserved too. The change is in `Documentation~/RTLTextMeshPro.patch` and must be applied in every project that uses RTLTMPro.
+
 
 ```csharp
 using RTLLocalizationStudio;
@@ -119,7 +132,7 @@ The editor-only review ledger marks a translated entry as needing review if its 
 
 ## Reuse
 
-See **نصب در هر پروژه** above. Unity resolves Localization and UGUI dependencies. The RTLTMPro bridge ships inside the package and stays inactive in projects without RTLTMPro. Project-specific data lives in `Assets/Localization`; do not copy game data when starting a different project. First-run setup creates a fresh workspace. This Studio targets fa/en/ar; extending its language list also requires updating the editor's CSV columns.
+See **Installation** above. Unity resolves Localization and UGUI dependencies. The RTLTMPro bridge ships inside the package and stays inactive in projects without RTLTMPro. Project-specific data lives in `Assets/Localization`; do not copy game data when starting a different project. First-run setup creates a fresh workspace.
 
 ## Verification
 

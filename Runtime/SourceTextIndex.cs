@@ -92,7 +92,7 @@ namespace RTLLocalizationStudio
                 if (slots.Contains(slot)) expression.Append(@"\k<n" + slot + ">");
                 else
                 {
-                    expression.Append("(?<n" + slot + @">[+\-−]?[0-9۰-۹٠-٩]+(?:[,.٬٫][0-9۰-۹٠-٩]+)*)");
+                    expression.Append("(?<n" + slot + @">[+\-−]?[0-9\u06f0-\u06f9\u0660-\u0669]+(?:[,.\u066c\u066b][0-9\u06f0-\u06f9\u0660-\u0669]+)*)");
                     slots.Add(slot);
                 }
                 previous = item.Index + item.Length;
@@ -127,7 +127,7 @@ namespace RTLLocalizationStudio
                 foreach (int slot in candidate.slots)
                 {
                     string number = Localization.FormatDigits(match.Groups["n" + slot].Value, DigitStyle.Latin)
-                        .Replace('−', '-').Replace('٬', ',').Replace('٫', '.');
+                        .Replace('−', '-').Replace('\u066c', ',').Replace('\u066b', '.');
                     if (!decimal.TryParse(number, NumberStyles.Number | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out decimal parsed)) { valid = false; break; }
                     args[slot] = parsed;
                 }

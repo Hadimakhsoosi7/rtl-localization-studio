@@ -33,7 +33,7 @@ namespace RTLLocalizationStudio.Editor
             void Assert(bool value, string message) { if (!value) throw new Exception(message); }
             Check("CSV preserves Persian, Arabic, quotes, commas and newlines", () =>
             {
-                var data = new[] { new[] { "Key", "fa", "en", "ar" }, new[] { "test", "سلام\nدنیا", "Hello, \"friend\"", "مرحبا" } };
+                var data = new[] { new[] { "Key", "fa", "en", "ar" }, new[] { "test", "\u0633\u0644\u0627\u0645\n\u062f\u0646\u06cc\u0627", "Hello, \"friend\"", "\u0645\u0631\u062d\u0628\u0627" } };
                 var parsed = TranslationCsv.Read("\ufeff" + TranslationCsv.Write(data));
                 Assert(parsed.Count == 2 && parsed[1].SequenceEqual(data[1]), "Round trip mismatch");
             });
@@ -56,20 +56,20 @@ namespace RTLLocalizationStudio.Editor
                 table.SharedData = shared;
                 try
                 {
-                    table.AddEntry("a", "شروع"); table.AddEntry("b", "شروع");
-                    table.AddEntry("score", "امتیاز: {0}");
+                    table.AddEntry("a", "\u0634\u0631\u0648\u0639"); table.AddEntry("b", "\u0634\u0631\u0648\u0639");
+                    table.AddEntry("score", "\u0627\u0645\u062a\u06cc\u0627\u0632: {0}");
                     SourceTextIndex.Rebuild(table);
-                    Assert(!SourceTextIndex.TryResolve("شروع", null, out _), "Ambiguous source was guessed");
-                    Assert(SourceTextIndex.TryResolve("شروع", "b", out var exact) && exact.key == "b", "Existing key was ignored");
-                    Assert(SourceTextIndex.TryResolve("امتیاز: ۱۲۳", null, out var numeric) && (decimal)numeric.arguments[0] == 123, "Persian numeric argument was lost");
-                    Assert(!SourceTextIndex.TryResolve("Player_123", null, out _) && !SourceTextIndex.TryResolve("امتیاز: {0}", null, out _), "Unknown/template text was translated");
+                    Assert(!SourceTextIndex.TryResolve("\u0634\u0631\u0648\u0639", null, out _), "Ambiguous source was guessed");
+                    Assert(SourceTextIndex.TryResolve("\u0634\u0631\u0648\u0639", "b", out var exact) && exact.key == "b", "Existing key was ignored");
+                    Assert(SourceTextIndex.TryResolve("\u0627\u0645\u062a\u06cc\u0627\u0632: \u06f1\u06f2\u06f3", null, out var numeric) && (decimal)numeric.arguments[0] == 123, "Persian numeric argument was lost");
+                    Assert(!SourceTextIndex.TryResolve("Player_123", null, out _) && !SourceTextIndex.TryResolve("\u0627\u0645\u062a\u06cc\u0627\u0632: {0}", null, out _), "Unknown/template text was translated");
                 }
                 finally { UnityEngine.Object.DestroyImmediate(table); UnityEngine.Object.DestroyImmediate(shared); }
             });
             Check("Digit conversion preserves rich text tags", () =>
             {
-                Assert(Localization.FormatDigits("<color=#123456>12</color>", DigitStyle.Persian) == "<color=#123456>۱۲</color>", "Tag corruption");
-                Assert(Localization.FormatDigits("۱۲٣", DigitStyle.Latin) == "123", "Mixed digit conversion failed");
+                Assert(Localization.FormatDigits("<color=#123456>12</color>", DigitStyle.Persian) == "<color=#123456>\u06f1\u06f2</color>", "Tag corruption");
+                Assert(Localization.FormatDigits("\u06f1\u06f2\u0663", DigitStyle.Latin) == "123", "Mixed digit conversion failed");
             });
             Check("Workspace contains all locales, fallback and preload", () =>
             {
@@ -165,7 +165,7 @@ namespace RTLLocalizationStudio.Editor
             try
             {
                 var text = go.AddComponent<TextMeshProUGUI>();
-                text.text = "شروع بازی";
+                text.text = "\u0634\u0631\u0648\u0639 \u0628\u0627\u0632\u06cc";
                 Check("Bulk binding preserves source and is idempotent", () =>
                 {
                     var row = LocalizationScanner.Describe(text, ""); row.key = key;
@@ -173,14 +173,14 @@ namespace RTLLocalizationStudio.Editor
                     LocalizationScanner.Bind(text, row, LabelAlignment.Preserve);
                     LocalizationScanner.Bind(text, row, LabelAlignment.Preserve);
                     Assert(go.GetComponents<LocalizedLabel>().Length == 1, "Duplicate label");
-                    Assert(text.text == "شروع بازی", "Binding modified visible source");
-                    Assert(LocalizationWorkspace.Value(key, "fa") == "شروع بازی", "Source not stored");
+                    Assert(text.text == "\u0634\u0631\u0648\u0639 \u0628\u0627\u0632\u06cc", "Binding modified visible source");
+                    Assert(LocalizationWorkspace.Value(key, "fa") == "\u0634\u0631\u0648\u0639 \u0628\u0627\u0632\u06cc", "Source not stored");
                 });
                 Check("Import previews before mutation and keeps blanks", () =>
                 {
                     var entry = LocalizationWorkspace.Collection.SharedData.GetEntry(key);
                     string[] header = { "Key", "Id", "fa", "en", "ar", "Smart", "SourceHash" };
-                    string[] row = { key, entry.Id.ToString(), "شروع بازی", "Play", "", "False", LocalizationWorkspace.SourceHash("شروع بازی") };
+                    string[] row = { key, entry.Id.ToString(), "\u0634\u0631\u0648\u0639 \u0628\u0627\u0632\u06cc", "Play", "", "False", LocalizationWorkspace.SourceHash("\u0634\u0631\u0648\u0639 \u0628\u0627\u0632\u06cc") };
                     var import = TranslationExchange.Preview(TranslationCsv.Write(new[] { header, row }));
                     Assert(import.errors.Count == 0 && import.changes.Count == 1, "Unexpected preview");
                     Assert(LocalizationWorkspace.Value(key, "en") == "", "Preview mutated table");
@@ -198,7 +198,7 @@ namespace RTLLocalizationStudio.Editor
                     other.SetActive(false);
                     try
                     {
-                        var t = other.AddComponent<TextMeshProUGUI>(); t.text = "۱۲۳";
+                        var t = other.AddComponent<TextMeshProUGUI>(); t.text = "\u06f1\u06f2\u06f3";
                         Assert(LocalizationScanner.Describe(t, "").status.Contains("review"), "Numeric text auto-selected");
                         t.text = "Name"; other.AddComponent<LocalizationIgnore>();
                         Assert(LocalizationScanner.Describe(t, "").status == "Excluded", "Ignore marker not honored");
@@ -219,9 +219,9 @@ namespace RTLLocalizationStudio.Editor
                         Localization.SetLanguage("en");
                         Assert(reference.GetLocalizedString() == "Play", "English value not selected");
                         Localization.SetLanguage("ar");
-                        Assert(reference.GetLocalizedString() == "شروع بازی", "Arabic did not fall back to Persian");
+                        Assert(reference.GetLocalizedString() == "\u0634\u0631\u0648\u0639 \u0628\u0627\u0632\u06cc", "Arabic did not fall back to Persian");
                         Localization.SetLanguage("fa");
-                        Assert(reference.GetLocalizedString() == "شروع بازی", "Persian switch failed");
+                        Assert(reference.GetLocalizedString() == "\u0634\u0631\u0648\u0639 \u0628\u0627\u0632\u06cc", "Persian switch failed");
                     }
                     finally
                     {
@@ -235,20 +235,20 @@ namespace RTLLocalizationStudio.Editor
                     var review = TranslationReviewState.Get();
                     review.MarkReviewed(key, "en");
                     Assert(!review.NeedsReview(key, "en"), "Fresh translation marked stale");
-                    LocalizationWorkspace.SetValue(key, "fa", "شروع");
+                    LocalizationWorkspace.SetValue(key, "fa", "\u0634\u0631\u0648\u0639");
                     Assert(review.NeedsReview(key, "en"), "Source edit did not mark review");
-                    LocalizationWorkspace.SetValue(key, "fa", "شروع بازی");
+                    LocalizationWorkspace.SetValue(key, "fa", "\u0634\u0631\u0648\u0639 \u0628\u0627\u0632\u06cc");
                 });
                 Check("Smart placeholder mismatch blocks import", () =>
                 {
-                    LocalizationWorkspace.SetValue(key, "fa", "امتیاز: {score}", true);
+                    LocalizationWorkspace.SetValue(key, "fa", "\u0627\u0645\u062a\u06cc\u0627\u0632: {score}", true);
                     var entry = LocalizationWorkspace.Collection.SharedData.GetEntry(key);
                     string[] header = { "Key", "Id", "fa", "en", "ar", "Smart", "SourceHash" };
-                    string[] row = { key, entry.Id.ToString(), "امتیاز: {score}", "Score: {wrong}", "", "True", LocalizationWorkspace.SourceHash("امتیاز: {score}") };
+                    string[] row = { key, entry.Id.ToString(), "\u0627\u0645\u062a\u06cc\u0627\u0632: {score}", "Score: {wrong}", "", "True", LocalizationWorkspace.SourceHash("\u0627\u0645\u062a\u06cc\u0627\u0632: {score}") };
                     Assert(TranslationExchange.Preview(TranslationCsv.Write(new[] { header, row })).errors.Count > 0, "Mismatched placeholder accepted");
                     row[3] = "Score: {score}";
                     Assert(TranslationExchange.Preview(TranslationCsv.Write(new[] { header, row })).errors.Count == 0, "Valid Smart String rejected");
-                    LocalizationWorkspace.SetValue(key, "fa", "شروع بازی");
+                    LocalizationWorkspace.SetValue(key, "fa", "\u0634\u0631\u0648\u0639 \u0628\u0627\u0632\u06cc");
                 });
                 Check("Saved prefab binding survives reload", () =>
                 {
@@ -258,7 +258,7 @@ namespace RTLLocalizationStudio.Editor
                     prefabObject.SetActive(false);
                     try
                     {
-                        var t = prefabObject.AddComponent<TextMeshProUGUI>(); t.text = "شروع بازی";
+                        var t = prefabObject.AddComponent<TextMeshProUGUI>(); t.text = "\u0634\u0631\u0648\u0639 \u0628\u0627\u0632\u06cc";
                         PrefabUtility.SaveAsPrefabAsset(prefabObject, path);
                         var asset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                         var row = LocalizationScanner.Describe(asset.GetComponent<TMP_Text>(), path); row.key = key;
@@ -298,9 +298,9 @@ namespace RTLLocalizationStudio.Editor
                 });
                 Check("Scene preview switches all labels and restores their authored style", () =>
                 {
-                    LocalizationWorkspace.SetValue(key, "fa", "شروع بازی");
+                    LocalizationWorkspace.SetValue(key, "fa", "\u0634\u0631\u0648\u0639 \u0628\u0627\u0632\u06cc");
                     LocalizationWorkspace.SetValue(key, "en", "Play");
-                    LocalizationWorkspace.SetValue(key, "ar", "ابدأ اللعب");
+                    LocalizationWorkspace.SetValue(key, "ar", "\u0627\u0628\u062f\u0623 \u0627\u0644\u0644\u0639\u0628");
                     var label = go.GetComponent<LocalizedLabel>();
                     var originalText = LocalizationScanner.Original(text);
                     float originalSize = text.fontSize;
@@ -330,10 +330,10 @@ namespace RTLLocalizationStudio.Editor
                         if (englishStyle.font) Assert(text.font == englishStyle.font, "Language font was not applied");
                         Assert(UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale == previousLocale, "Preview changed runtime locale");
                         LocalizationScenePreview.Show("ar", new[] { label, secondLabel });
-                        Assert(secondText.text == "ابدأ اللعب", "Arabic translation was not applied");
+                        Assert(secondText.text == "\u0627\u0628\u062f\u0623 \u0627\u0644\u0644\u0639\u0628", "Arabic translation was not applied");
                         Assert((int)secondText.alignment % 256 == 4, "Arabic follow-language alignment not right");
                         LocalizationScenePreview.Show("fa", new[] { label, secondLabel });
-                        Assert(secondText.text == "شروع بازی", "Persian button did not restore source translation");
+                        Assert(secondText.text == "\u0634\u0631\u0648\u0639 \u0628\u0627\u0632\u06cc", "Persian button did not restore source translation");
                         LocalizationScenePreview.Stop();
                         Assert(LocalizationScanner.Original(text) == originalText, "Authored text not restored");
                         Assert(secondText.text == "Original second text", "Second label was not restored");
